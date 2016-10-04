@@ -7,8 +7,8 @@ func TestEqual(t *testing.T) {
 		a, b   Point
 		result bool
 	}{
-		{Point{x: -1, y: 1}, Point{x: -1, y: 1}, true},
-		{Point{x: -1, y: 1}, Point{x: 0, y: 0}, false},
+		{Point{X: -1, Y: 1}, Point{X: -1, Y: 1}, true},
+		{Point{X: -1, Y: 1}, Point{X: 0, Y: 0}, false},
 		{Point{}, Point{}, true},
 	}
 	for _, c := range cases {
@@ -24,10 +24,10 @@ func TestAdd(t *testing.T) {
 	cases := []struct {
 		a, b, result Point
 	}{
-		{Point{x: 1, y: 2}, Point{x: -1, y: 1}, Point{x: 0, y: 3}},
-		{Point{}, Point{x: 0, y: 0}, Point{}},
-		{Point{x: 1, y: 1}, Point{}, Point{x: 1, y: 1}},
-		{Point{x: 1, y: 1}, Point{x: 1, y: 1}, Point{x: 2, y: 2}},
+		{Point{X: 1, Y: 2}, Point{X: -1, Y: 1}, Point{X: 0, Y: 3}},
+		{Point{}, Point{X: 0, Y: 0}, Point{}},
+		{Point{X: 1, Y: 1}, Point{}, Point{X: 1, Y: 1}},
+		{Point{X: 1, Y: 1}, Point{X: 1, Y: 1}, Point{X: 2, Y: 2}},
 	}
 	for _, c := range cases {
 		r := c.a.Add(c.b)
@@ -43,10 +43,10 @@ func TestSub(t *testing.T) {
 	cases := []struct {
 		a, b, result Point
 	}{
-		{Point{x: 1, y: 2}, Point{x: -1, y: 1}, Point{x: 2, y: 1}},
-		{Point{}, Point{x: 0, y: 0}, Point{}},
-		{Point{x: 1, y: 1}, Point{}, Point{x: 1, y: 1}},
-		{Point{x: 1, y: 1}, Point{x: 1, y: 1}, Point{x: 0, y: 0}},
+		{Point{X: 1, Y: 2}, Point{X: -1, Y: 1}, Point{X: 2, Y: 1}},
+		{Point{}, Point{X: 0, Y: 0}, Point{}},
+		{Point{X: 1, Y: 1}, Point{}, Point{X: 1, Y: 1}},
+		{Point{X: 1, Y: 1}, Point{X: 1, Y: 1}, Point{X: 0, Y: 0}},
 	}
 	for _, c := range cases {
 		r := c.a.Sub(c.b)
@@ -61,11 +61,11 @@ func TestString(t *testing.T) {
 		p Point
 		s string
 	}{
-		{Point{x: 1, y: 2}, "(1,2)"},
+		{Point{X: 1, Y: 2}, "(1,2)"},
 		{Point{}, "(0,0)"},
-		{Point{x: 1, y: 1}, "(1,1)"},
-		{Point{x: 1, y: -1}, "(1,-1)"},
-		{Point{x: 0, y: -5}, "(0,-5)"},
+		{Point{X: 1, Y: 1}, "(1,1)"},
+		{Point{X: 1, Y: -1}, "(1,-1)"},
+		{Point{X: 0, Y: -5}, "(0,-5)"},
 	}
 	for _, c := range cases {
 		s := c.p.String()
@@ -80,10 +80,10 @@ func TestManhattan(t *testing.T) {
 		p Point
 		d int
 	}{
-		{Point{x: 1, y: 2}, 3},
+		{Point{X: 1, Y: 2}, 3},
 		{Point{}, 0},
-		{Point{x: 1, y: -1}, 2},
-		{Point{x: 0, y: -5}, 5},
+		{Point{X: 1, Y: -1}, 2},
+		{Point{X: 0, Y: -5}, 5},
 	}
 	for _, c := range cases {
 		d := c.p.Manhattan()
@@ -98,16 +98,16 @@ func TestManhattanTo(t *testing.T) {
 		a, b Point
 		d    int
 	}{
-		{Point{}, Point{x: 1, y: 2}, 3},
+		{Point{}, Point{X: 1, Y: 2}, 3},
 		{Point{}, Point{}, 0},
-		{Point{}, Point{x: 1, y: -1}, 2},
-		{Point{}, Point{x: 0, y: -5}, 5},
-		{Point{}, Point{x: -2, y: -5}, 7},
+		{Point{}, Point{X: 1, Y: -1}, 2},
+		{Point{}, Point{X: 0, Y: -5}, 5},
+		{Point{}, Point{X: -2, Y: -5}, 7},
 
-		{Point{x: 1, y: -1}, Point{x: 1, y: 2}, 3},
-		{Point{x: 1, y: 2}, Point{x: 1, y: -1}, 3},
-		{Point{x: -1, y: -2}, Point{x: -3, y: -4}, 4},
-		{Point{x: 1, y: 2}, Point{x: 3, y: 4}, 4},
+		{Point{X: 1, Y: -1}, Point{X: 1, Y: 2}, 3},
+		{Point{X: 1, Y: 2}, Point{X: 1, Y: -1}, 3},
+		{Point{X: -1, Y: -2}, Point{X: -3, Y: -4}, 4},
+		{Point{X: 1, Y: 2}, Point{X: 3, Y: 4}, 4},
 	}
 	for _, c := range cases {
 		d := c.a.ManhattanTo(c.b)
