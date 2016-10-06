@@ -6,7 +6,7 @@ type Board struct {
 	cells [][]*Checker
 }
 
-func NewField(size int) (*Board, bool) {
+func NewBoard(size int) (*Board, bool) {
 	if size < 0 {
 		return nil, false
 	}
