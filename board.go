@@ -21,17 +21,17 @@ func (b Board) Size() int {
 	return len(b.cells)
 }
 
-func (b *Board) PlaceChecker(pos point.Point, c *Checker) {
+func (b *Board) placeChecker(pos point.Point, c *Checker) {
 	b.cells[pos.Y][pos.Y] = c
 }
 
-func (b *Board) TakeChecker(pos point.Point) *Checker {
+func (b *Board) takeChecker(pos point.Point) *Checker {
 	c := b.cells[pos.Y][pos.Y]
 	b.cells[pos.Y][pos.Y] = nil
 	return c
 }
 
-func (b *Board) MoveChecker(from, to point.Point) {
+func (b *Board) moveChecker(from, to point.Point) {
 	b.cells[to.Y][to.Y] = b.cells[from.Y][from.Y]
 	b.cells[from.Y][from.Y] = nil
 }

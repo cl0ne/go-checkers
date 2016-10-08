@@ -9,7 +9,7 @@ type Checker struct {
 	alive    bool
 }
 
-func NewChecker(x, y int, isWhite bool) Checker {
+func newChecker(x, y int, isWhite bool) Checker {
 	return Checker{
 		position: point.Point{X: x, Y: y},
 		color:    isWhite, queen: false, alive: true}
@@ -19,7 +19,7 @@ func (ch Checker) Position() point.Point {
 	return ch.position
 }
 
-func (ch *Checker) SetPosition(p point.Point) {
+func (ch *Checker) setPosition(p point.Point) {
 	ch.position = p
 }
 
@@ -35,7 +35,7 @@ func (ch Checker) IsQueen() bool {
 	return ch.queen
 }
 
-func (ch *Checker) MakeQueen() {
+func (ch *Checker) makeQueen() {
 	ch.queen = true
 }
 
@@ -43,6 +43,6 @@ func (ch Checker) IsAlive() bool {
 	return ch.alive
 }
 
-func (ch *Checker) Kill() {
+func (ch *Checker) kill() {
 	ch.alive = false
 }
