@@ -2,6 +2,25 @@ package checkers
 
 import "github.com/cl0ne/go-checkers/point"
 
+/*
+Checker board class
+For example:
+
+  abcdefgh
+ ..........
+8| # # # #|8
+7|# # # # |7
+6| # # # #|6
+5|# # # # |5
+4| # # # #|4
+3|# # # # |3
+2| # # # #|2
+1|# # # # |1
+ ''''''''''
+  abcdefgh
+
+Here a1 has position (0,0) and h8 is on (7,7)
+*/
 type Board struct {
 	cells [][]*Checker
 }
@@ -48,8 +67,8 @@ func (b Board) IsBlackSquare(pos point.Point) bool {
 	return pos.Manhattan()%2 == 0
 }
 
-func (b Board) IsValidPosition(pos point.Point) bool {
-	return b.ContainsPos(pos) && b.IsBlackSquare(pos)
+func (b Board) IsWhiteSquare(pos point.Point) bool {
+	return pos.Manhattan()%2 == 1
 }
 
 func (b Board) ContainsPos(pos point.Point) bool {
