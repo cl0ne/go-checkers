@@ -40,27 +40,32 @@ func (b Board) Size() int {
 	return len(b.cells)
 }
 
-func (b *Board) placeChecker(pos point.Point, c *Checker) {
-	b.cells[pos.Y][pos.Y] = c
+func (b *Board) placeChecker(x, y int, c *Checker) {
+	b.cells[y][x] = c
+	if c != nil {
+		c.setPosition(x, y)
+	}
 }
 
-func (b *Board) takeChecker(pos point.Point) *Checker {
-	c := b.cells[pos.Y][pos.Y]
-	b.cells[pos.Y][pos.Y] = nil
+func (b *Board) takeChecker(x, y int) *Checker {
+	c := b.cells[y][x]
+	b.cells[y][x] = nil
 	return c
 }
 
 func (b *Board) moveChecker(from, to point.Point) {
-	b.cells[to.Y][to.Y] = b.cells[from.Y][from.Y]
-	b.cells[from.Y][from.Y] = nil
+	c1 := b.cells[from.Y][from.X]
+	c2 := b.cells[to.Y][to.X]
+	b.placeChecker(from.X, from.Y, c2)
+	b.placeChecker(to.X, to.Y, c1)
 }
 
-func (b Board) GetChecker(pos point.Point) *Checker {
-	return b.cells[pos.Y][pos.Y]
+func (b Board) GetChecker(x, y int) *Checker {
+	return b.cells[y][x]
 }
 
-func (b Board) IsEmpty(pos point.Point) bool {
-	return b.cells[pos.Y][pos.Y] == nil
+func (b Board) IsEmpty(x, y int) bool {
+	return b.cells[y][x] == nil
 }
 
 func (b Board) IsBlackSquare(pos point.Point) bool {
@@ -71,7 +76,7 @@ func (b Board) IsWhiteSquare(pos point.Point) bool {
 	return pos.Manhattan()%2 == 1
 }
 
-func (b Board) ContainsPos(pos point.Point) bool {
+func (b Board) ContainsPos(x, y int) bool {
 	fieldSize := b.Size()
-	return pos.X >= 0 && pos.Y >= 0 && pos.X < fieldSize && pos.Y < fieldSize
+	return x >= 0 && y >= 0 && x < fieldSize && y < fieldSize
 }
