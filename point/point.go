@@ -35,3 +35,13 @@ func (p Point) Manhattan() int {
 func (p Point) ManhattanTo(q Point) int {
 	return int(math.Abs(float64(p.X-q.X)) + math.Abs(float64(p.Y-q.Y)))
 }
+
+func (p *Point) Scale(factor int) *Point {
+	p.X *= factor
+	p.Y *= factor
+	return p
+}
+
+func (p Point) Scaled(factor int) Point {
+	return Point{p.X * factor, p.Y * factor}
+}

@@ -116,3 +116,35 @@ func TestManhattanTo(t *testing.T) {
 		}
 	}
 }
+
+func TestScaleAndScaled(t *testing.T) {
+	cases := []struct {
+		p      Point
+		f      int
+		result Point
+	}{
+		{Point{}, 3, Point{}},
+		{Point{}, 0, Point{}},
+		{Point{}, -3, Point{}},
+		{Point{}, 1, Point{}},
+		{Point{}, -1, Point{}},
+		{Point{X: -1, Y: 2}, 0, Point{}},
+		{Point{X: 1, Y: -2}, 0, Point{}},
+		{Point{X: 1, Y: 2}, 1, Point{X: 1, Y: 2}},
+		{Point{X: 1, Y: 2}, -1, Point{X: -1, Y: -2}},
+		{Point{X: 1, Y: 2}, 2, Point{X: 2, Y: 4}},
+		{Point{X: 1, Y: 2}, -2, Point{X: -2, Y: -4}},
+		{Point{X: -2, Y: 4}, 3, Point{X: -6, Y: 12}},
+		{Point{X: 2, Y: -4}, -3, Point{X: -6, Y: 12}},
+	}
+	for _, c := range cases {
+		p := c.p
+		r := p.Scaled(c.f)
+		if r != c.result {
+			t.Error(c.p, "*", c.f, " expected ", c.result, ", got ", r)
+		}
+		if *p.Scale(c.f) != r {
+			t.Error("In-place scaled ", p, " must be equal to scaled copy: ", r)
+		}
+	}
+}
