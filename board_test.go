@@ -109,8 +109,7 @@ func TestBoardOperations(t *testing.T) {
 		to := point.Point{X: 4, Y: 3}
     board.placeChecker(from.X, from.Y, &checker)
 		board.moveChecker(from, to)
-		c := board.GetChecker(3, 4)
-		if c != nil {
+		if !board.IsEmpty(from.X, from.Y) {
 			t.Error("Checker wasn't moved from", from, "to", to)
 		}
 	})
