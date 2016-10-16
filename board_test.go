@@ -1,108 +1,115 @@
 package checkers
 
 import (
-  "testing"
-  "github.com/cl0ne/go-checkers/point"
+	"testing"
+
+	"github.com/cl0ne/go-checkers/point"
 )
 
 func TestNewBoard(t *testing.T) {
-  board_zero := NewBoard(0)
-  if board_zero != nil {
-    t.Error("Size: ", board_zero.Size(), ". Board's size shouldn't be zero.")
-  }
-  board_neg := NewBoard(-1)
-  if board_neg != nil {
-    t.Error("Size: ", board_neg.Size(), ". Board's size shouldn't be negative.")
-  }
+	uselessBoard := NewBoard(0)
+	if uselessBoard == nil {
+		t.Error("Zero-sized boards aren't very useful, but got nil.")
+	}
+	if uselessBoard.Size() != 0 {
+		t.Error("Zero-sized board after creation got size of", uselessBoard.Size())
+	}
+
+	invalidBoard := NewBoard(-1)
+	if invalidBoard != nil {
+		t.Error("Boards of negative size not allowed, got size of", invalidBoard.Size())
+	}
+
+	board8x8 := NewBoard(8)
+	if board8x8 == nil {
+		t.Error("Can't create 8x8 board got nil.")
+	}
+	if board8x8.Size() != 8 {
+		t.Error("Size of created 8x8 board is", board8x8.Size())
+	}
 }
 
-func TestIsEmpty(t *testing.T) {
-  board := NewBoard(8)
-  checker := newChecker(3, 3, true)
-  point_check := point.Point{ X:3, Y:3 }
-  board.placeChecker(3, 3, &checker)
-  if board.IsEmpty(3, 3) {
-    t.Error("Cell at ", point_check.String(), " is empty.")
-  }
-  point_check.X = 4
-  point_check.Y = 6
-  if !board.IsEmpty(4, 6) {
-    t.Error("Cell at ", point_check.String(), " is not empty.")
-  }
-}
+func TestBoardOperations(t *testing.T) {
+	board := NewBoard(8)
+	t.Run("IsEmpty", func(t *testing.T) {
+		checker := newChecker(3, 3, true)
+		p := point.Point{X: 3, Y: 3}
+		board.placeChecker(p.X, p.Y, &checker)
+		if board.IsEmpty(p.X, p.Y) {
+			t.Error("Cell", p, "shouldn't be empty.")
+		}
+		p.X, p.Y = 4, 6
+		if !board.IsEmpty(p.X, p.Y) {
+			t.Error("Cell", p, "should be empty.")
+		}
+	})
 
-func TestContainsPos(t *testing.T) {
-  board := NewBoard(6)
-  point := point.Point{ X:7, Y:8 }
-  ok_pos := board.ContainsPos(7, 8)
-  if ok_pos {
-    t.Error("Invalid position at ", point.String(), ". Out of range of board.")
-  }
-  point.X, point.Y = 3, 2
-  ok_pos = board.ContainsPos(3, 2)
-  if !ok_pos {
-    t.Error("Valid position at ", point.String(), ". In range of board.")
-  }
-}
+	t.Run("ContainsPos", func(t *testing.T) {
+		point := point.Point{X: 7, Y: 8}
+		contains := board.ContainsPos(7, 8)
+		if contains {
+			t.Error("Cell", point, "is outside of the board.")
+		}
+		point.X, point.Y = 3, 2
+		contains = board.ContainsPos(3, 2)
+		if !contains {
+			t.Error("Cell", point, "is within the board.")
+		}
+	})
 
-func TestIsBlackSquare(t *testing.T) {
-  board := NewBoard(8)
-  point_black := point.Point{ X:4, Y:0 }
-  point_white := point.Point{ X:2, Y:1 }
-  if !board.IsBlackSquare(point_black) {
-    t.Error("Cell at ", point_black.String(), " must be black.")
-  }
-  if board.IsBlackSquare(point_white) {
-    t.Error("Cell at ", point_white.String(), " must be white.")
-  }
-}
+	whiteCell := point.Point{X: 2, Y: 1}
+	blackCell := point.Point{X: 4, Y: 0}
 
-func TestIsWhiteSquare(t *testing.T) {
-  board := NewBoard(8)
-  point_white := point.Point{ X:2, Y:1 }
-  point_black := point.Point{ X:4, Y:0 }
-  if !board.IsWhiteSquare(point_white) {
-    t.Error("Cell at ", point_white.String(), " must be white.")
-  }
-  if board.IsWhiteSquare(point_black) {
-    t.Error("Cell at ", point_black.String(), " must be black.")
-  }
-}
+	t.Run("IsBlackSquare", func(t *testing.T) {
+		if !board.IsBlackSquare(blackCell) {
+			t.Error("Cell", blackCell, "must be black.")
+		}
+		if board.IsBlackSquare(whiteCell) {
+			t.Error("Cell", whiteCell, "must be white.")
+		}
+	})
 
-func TestTakeChecker(t *testing.T) {
-  board := NewBoard(6)
-  checker := newChecker(2, 2, true)
-  point := point.Point{ X:2, Y:2 }
-  board.placeChecker(2, 2, &checker)
-  c := board.takeChecker(2, 2)
-  if c == nil {
-    t.Error("Cell at ", point.String(), " was empty. Couldn't take checker.")
-  }
-}
+	t.Run("IsWhiteSquare", func(t *testing.T) {
+		if !board.IsWhiteSquare(whiteCell) {
+			t.Error("Cell", whiteCell, "must be white.")
+		}
+		if board.IsWhiteSquare(blackCell) {
+			t.Error("Cell", blackCell, "must be black.")
+		}
+	})
 
-func TestGetChecker(t *testing.T) {
-  board := NewBoard(8)
-  checker := newChecker(2, 4, false)
-  point := point.Point { X:2, Y:4 }
-  board.placeChecker(2, 4, &checker)
-  c := board.GetChecker(2, 4)
-  if c == nil {
-    t.Error("Checker at ", point.String(), " is abcent.")
-  }
-  c = board.GetChecker(5, 5)
-  point.X, point.Y = 5, 5
-  if c != nil {
-    t.Error("Checker at ", point.String(), " should be abcent.")
-  }
-}
+	t.Run("TakeChecker", func(t *testing.T) {
+		p := point.Point{X: 2, Y: 2}
+		checker := newChecker(p.X, p.Y, true)
+		board.placeChecker(p.X, p.Y, &checker)
+		c := board.takeChecker(p.X, p.Y)
+		if c == nil {
+			t.Error("Can't take checker at", p, ": cell is empty.")
+		}
+	})
 
-func TestMoveChecker(t *testing.T) {
-  board := NewBoard(8)
-  point_from := point.Point{ X:3, Y:4 }
-  point_to := point.Point{ X:4, Y:3 }
-  board.moveChecker(point_from, point_to)
-  c := board.GetChecker(3, 4)
-  if c != nil {
-    t.Error("Checker wasn't moved from ", point_from.String(), " to ", point_to.String())
-  }
+	t.Run("GetChecker", func(t *testing.T) {
+		p := point.Point{X: 2, Y: 4}
+		checker := newChecker(p.X, p.Y, false)
+		board.placeChecker(p.X, p.Y, &checker)
+		c := board.GetChecker(p.X, p.Y)
+		if c == nil {
+			t.Error("Checker at", p, "is missing.")
+		}
+		p.X, p.Y = 5, 5
+		c = board.GetChecker(p.X, p.Y)
+		if c != nil {
+			t.Error("Cell", p, "should be empty")
+		}
+	})
+
+	t.Run("MoveChecker", func(t *testing.T) {
+		from := point.Point{X: 3, Y: 4}
+		to := point.Point{X: 4, Y: 3}
+		board.moveChecker(from, to)
+		c := board.GetChecker(3, 4)
+		if c != nil {
+			t.Error("Checker wasn't moved from", from, "to", to)
+		}
+	})
 }
