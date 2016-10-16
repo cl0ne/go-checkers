@@ -25,15 +25,15 @@ type Board struct {
 	cells [][]*Checker
 }
 
-func NewBoard(size int) (*Board, bool) {
+func NewBoard(size int) *Board {
 	if size < 0 {
-		return nil, false
+		return nil
 	}
 	cells := make([][]*Checker, size)
 	for i := range cells {
 		cells[i] = make([]*Checker, size)
 	}
-	return &Board{cells: cells}, true
+	return &Board{cells: cells}
 }
 
 func (b Board) Size() int {
