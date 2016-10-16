@@ -105,7 +105,9 @@ func TestBoardOperations(t *testing.T) {
 
 	t.Run("MoveChecker", func(t *testing.T) {
 		from := point.Point{X: 3, Y: 4}
+    checker := newChecker(from.X, from.Y, true)
 		to := point.Point{X: 4, Y: 3}
+    board.placeChecker(from.X, from.Y, &checker)
 		board.moveChecker(from, to)
 		c := board.GetChecker(3, 4)
 		if c != nil {
