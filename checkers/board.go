@@ -52,10 +52,14 @@ func (b *Board) takeChecker(x, y int) *Checker {
 }
 
 func (b *Board) moveChecker(from, to Point) {
-	c1 := b.cells[from.Y][from.X]
-	c2 := b.cells[to.Y][to.X]
-	b.placeChecker(from.X, from.Y, c2)
-	b.placeChecker(to.X, to.Y, c1)
+	if from == to {
+		return
+	}
+	if !b.ContainsPos(from.X, from.Y) || !b.ContainsPos(to.X, to.Y) {
+		return
+	}
+	c := b.takeChecker(from.X, from.Y)
+	b.placeChecker(to.X, to.Y, c)
 }
 
 func (b Board) GetChecker(x, y int) *Checker {
