@@ -1,9 +1,7 @@
 package checkers
 
-import "github.com/cl0ne/go-checkers/point"
-
 type Checker struct {
-	position point.Point
+	position Point
 	color    bool
 	queen    bool
 	alive    bool
@@ -11,20 +9,24 @@ type Checker struct {
 
 func newChecker(x, y int, isWhite bool) Checker {
 	return Checker{
-		position: point.Point{X: x, Y: y},
+		position: Point{X: x, Y: y},
 		color:    isWhite,
 		queen:    false,
 		alive:    true,
 	}
 }
 
-func (ch Checker) Position() point.Point {
+func (ch Checker) Position() Point {
 	return ch.position
 }
 
 func (ch *Checker) setPosition(x, y int) {
 	ch.position.X = x
 	ch.position.Y = y
+}
+
+func (c Checker) IsForwardMove(target Point) bool {
+	return c.Position() != target && c.IsWhite() == (c.Position().Y < target.Y)
 }
 
 func (ch Checker) IsWhite() bool {

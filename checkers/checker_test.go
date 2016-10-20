@@ -2,8 +2,6 @@ package checkers
 
 import (
 	"testing"
-
-	"github.com/cl0ne/go-checkers/point"
 )
 
 func TestKill(t *testing.T) {
@@ -18,7 +16,7 @@ func TestNewChecker(t *testing.T) {
 	checker_queen := newChecker(3, 2, false)
 	checker_alive := newChecker(2, 4, true)
 	checker_pos := newChecker(4, 2, true)
-	point := point.Point{X: 4, Y: 2}
+	point := Point{X: 4, Y: 2}
 	if checker_queen.IsQueen() {
 		t.Error("checker is queen.")
 	}
@@ -54,7 +52,7 @@ func TestIsBlack(t *testing.T) {
 
 func TestSetPosition(t *testing.T) {
 	checker := newChecker(4, 5, true)
-	point := point.Point{X: 6, Y: 2}
+	point := Point{X: 6, Y: 2}
 	checker.setPosition(point.X, point.Y)
 	if checker.Position() != point {
 		t.Error("checker is not right position.")

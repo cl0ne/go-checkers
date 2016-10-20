@@ -1,7 +1,5 @@
 package checkers
 
-import "github.com/cl0ne/go-checkers/point"
-
 /*
 Checker board class
 For example:
@@ -53,7 +51,7 @@ func (b *Board) takeChecker(x, y int) *Checker {
 	return c
 }
 
-func (b *Board) moveChecker(from, to point.Point) {
+func (b *Board) moveChecker(from, to Point) {
 	c1 := b.cells[from.Y][from.X]
 	c2 := b.cells[to.Y][to.X]
 	b.placeChecker(from.X, from.Y, c2)
@@ -68,11 +66,11 @@ func (b Board) IsEmpty(x, y int) bool {
 	return b.cells[y][x] == nil
 }
 
-func (b Board) IsBlackSquare(pos point.Point) bool {
+func (b Board) IsBlackSquare(pos Point) bool {
 	return pos.Manhattan()%2 == 0
 }
 
-func (b Board) IsWhiteSquare(pos point.Point) bool {
+func (b Board) IsWhiteSquare(pos Point) bool {
 	return pos.Manhattan()%2 == 1
 }
 
@@ -80,3 +78,4 @@ func (b Board) ContainsPos(x, y int) bool {
 	fieldSize := b.Size()
 	return x >= 0 && y >= 0 && x < fieldSize && y < fieldSize
 }
+

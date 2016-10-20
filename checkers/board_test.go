@@ -2,8 +2,6 @@ package checkers
 
 import (
 	"testing"
-
-	"github.com/cl0ne/go-checkers/point"
 )
 
 func TestNewBoard(t *testing.T) {
@@ -33,7 +31,7 @@ func TestBoardOperations(t *testing.T) {
 	board := NewBoard(8)
 	t.Run("IsEmpty", func(t *testing.T) {
 		checker := newChecker(3, 3, true)
-		p := point.Point{X: 3, Y: 3}
+		p := Point{X: 3, Y: 3}
 		board.placeChecker(p.X, p.Y, &checker)
 		if board.IsEmpty(p.X, p.Y) {
 			t.Error("Cell", p, "shouldn't be empty.")
@@ -45,7 +43,7 @@ func TestBoardOperations(t *testing.T) {
 	})
 
 	t.Run("ContainsPos", func(t *testing.T) {
-		point := point.Point{X: 7, Y: 8}
+		point := Point{X: 7, Y: 8}
 		contains := board.ContainsPos(7, 8)
 		if contains {
 			t.Error("Cell", point, "is outside of the board.")
@@ -57,8 +55,8 @@ func TestBoardOperations(t *testing.T) {
 		}
 	})
 
-	whiteCell := point.Point{X: 2, Y: 1}
-	blackCell := point.Point{X: 4, Y: 0}
+	whiteCell := Point{X: 2, Y: 1}
+	blackCell := Point{X: 4, Y: 0}
 
 	t.Run("IsBlackSquare", func(t *testing.T) {
 		if !board.IsBlackSquare(blackCell) {
@@ -79,7 +77,7 @@ func TestBoardOperations(t *testing.T) {
 	})
 
 	t.Run("TakeChecker", func(t *testing.T) {
-		p := point.Point{X: 2, Y: 2}
+		p := Point{X: 2, Y: 2}
 		checker := newChecker(p.X, p.Y, true)
 		board.placeChecker(p.X, p.Y, &checker)
 		c := board.takeChecker(p.X, p.Y)
@@ -89,7 +87,7 @@ func TestBoardOperations(t *testing.T) {
 	})
 
 	t.Run("GetChecker", func(t *testing.T) {
-		p := point.Point{X: 2, Y: 4}
+		p := Point{X: 2, Y: 4}
 		checker := newChecker(p.X, p.Y, false)
 		board.placeChecker(p.X, p.Y, &checker)
 		c := board.GetChecker(p.X, p.Y)
@@ -104,10 +102,10 @@ func TestBoardOperations(t *testing.T) {
 	})
 
 	t.Run("MoveChecker", func(t *testing.T) {
-		from := point.Point{X: 3, Y: 4}
-    checker := newChecker(from.X, from.Y, true)
-		to := point.Point{X: 4, Y: 3}
-    board.placeChecker(from.X, from.Y, &checker)
+		from := Point{X: 3, Y: 4}
+		checker := newChecker(from.X, from.Y, true)
+		to := Point{X: 4, Y: 3}
+		board.placeChecker(from.X, from.Y, &checker)
 		board.moveChecker(from, to)
 		if !board.IsEmpty(from.X, from.Y) {
 			t.Error("Checker wasn't moved from", from, "to", to)
