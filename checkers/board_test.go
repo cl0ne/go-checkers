@@ -107,8 +107,19 @@ func TestBoardOperations(t *testing.T) {
 		to := Point{X: 4, Y: 3}
 		board.placeChecker(from.X, from.Y, &checker)
 		board.moveChecker(from, to)
-		if !board.IsEmpty(from.X, from.Y) {
+		if !board.IsEmpty(from.X, from.Y) || board.IsEmpty(to.X, to.Y) {
 			t.Error("Checker wasn't moved from", from, "to", to)
+		}
+		from = to
+		to.X, to.Y = -3, -6
+		board.moveChecker(from, to)
+		if board.ContainsPos(to.X, to.Y) {
+			t.Error("Invalid position at ", to.String(), ". Out of range of board.")
+		}
+		to.X, to.Y = 10, 8
+		board.moveChecker(from, to)
+		if board.ContainsPos(to.X, to.Y) {
+			t.Error("Invalid position at ", to.String(), ". Out of range of board.")
 		}
 	})
 }
