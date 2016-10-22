@@ -30,7 +30,7 @@ func TestNewBoard(t *testing.T) {
 func TestBoardOperations(t *testing.T) {
 	board := NewBoard(8)
 	t.Run("IsEmpty", func(t *testing.T) {
-		checker := newChecker(3, 3, true)
+		checker := newChecker(true)
 		p := Point{X: 3, Y: 3}
 		board.placeChecker(p.X, p.Y, &checker)
 		if board.IsEmpty(p.X, p.Y) {
@@ -78,7 +78,7 @@ func TestBoardOperations(t *testing.T) {
 
 	t.Run("TakeChecker", func(t *testing.T) {
 		p := Point{X: 2, Y: 2}
-		checker := newChecker(p.X, p.Y, true)
+		checker := newChecker(true)
 		board.placeChecker(p.X, p.Y, &checker)
 		c := board.takeChecker(p.X, p.Y)
 		if c == nil {
@@ -88,7 +88,7 @@ func TestBoardOperations(t *testing.T) {
 
 	t.Run("GetChecker", func(t *testing.T) {
 		p := Point{X: 2, Y: 4}
-		checker := newChecker(p.X, p.Y, false)
+		checker := newChecker(false)
 		board.placeChecker(p.X, p.Y, &checker)
 		c := board.GetChecker(p.X, p.Y)
 		if c == nil {
@@ -103,7 +103,7 @@ func TestBoardOperations(t *testing.T) {
 
 	t.Run("MoveChecker", func(t *testing.T) {
 		from := Point{X: 3, Y: 4}
-		checker := newChecker(from.X, from.Y, true)
+		checker := newChecker(true)
 		to := Point{X: 4, Y: 3}
 		board.placeChecker(from.X, from.Y, &checker)
 		board.moveChecker(from, to)

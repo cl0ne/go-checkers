@@ -7,9 +7,8 @@ type Checker struct {
 	alive    bool
 }
 
-func newChecker(x, y int, isWhite bool) Checker {
+func newChecker(isWhite bool) Checker {
 	return Checker{
-		position: Point{X: x, Y: y},
 		color:    isWhite,
 		queen:    false,
 		alive:    true,
