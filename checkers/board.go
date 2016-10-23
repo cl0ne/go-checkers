@@ -83,3 +83,10 @@ func (b Board) ContainsPos(x, y int) bool {
 	return x >= 0 && y >= 0 && x < fieldSize && y < fieldSize
 }
 
+func (b Board) LastRowIndex() int {
+	return b.Size() - 1
+}
+
+func (b Board) LastColumnIndex() int {
+	return b.Size() - 1
+}
