@@ -92,7 +92,7 @@ func (g Game) getAvailableMoves(c *Checker) (moves []Move) {
 	return
 }
 
-func (g *Game) StartGame() {
+func (g *Game) Start() {
 	g.isFinished = false
 	g.activePlayer = 0
 
