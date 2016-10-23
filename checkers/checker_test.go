@@ -4,14 +4,6 @@ import (
 	"testing"
 )
 
-func TestKill(t *testing.T) {
-	checker := newChecker(true)
-	checker.kill()
-	if checker.IsAlive() {
-		t.Error("checker is alive after kill.")
-	}
-}
-
 func TestNewChecker(t *testing.T) {
 	checker_queen := newChecker(false)
 	checker_alive := newChecker(true)
@@ -28,33 +20,40 @@ func TestNewChecker(t *testing.T) {
 	}
 }
 
-func TestMakeQueen(t *testing.T) {
-	checker := newChecker(true)
-	checker.makeQueen()
-	if !checker.IsQueen() {
-		t.Error("checker is not queen.")
-	}
-}
+func TestCheckerOperations(t *testing.T) {
+	blackChecker := newChecker(false)
+	whiteChecker := newChecker(true)
+	t.Run("MakeQueen", func(t *testing.T) {
+		whiteChecker.makeQueen()
+		if !whiteChecker.IsQueen() {
+			t.Error("checker is not queen.")
+		}
+	})
 
-func TestIsWhite(t *testing.T) {
-	checker := newChecker(true)
-	if checker.IsBlack() {
-		t.Error("checker is black.")
-	}
-}
+	t.Run("IsWhite", func(t *testing.T) {
+		if whiteChecker.IsBlack() {
+			t.Error("checker is black.")
+		}
+	})
 
-func TestIsBlack(t *testing.T) {
-	checker := newChecker(false)
-	if checker.IsWhite() {
-		t.Error("checker is white.")
-	}
-}
+	t.Run("IsBlack", func(t *testing.T) {
+		if blackChecker.IsWhite() {
+			t.Error("checker is white.")
+		}
+	})
 
-func TestSetPosition(t *testing.T) {
-	checker := newChecker(true)
-	point := Point{X: 6, Y: 2}
-	checker.setPosition(6, 2)
-	if checker.Position() != point {
-		t.Error("checker is not right position.")
-	}
+	t.Run("SetPosition", func(t *testing.T) {
+		point := Point{X: 6, Y: 2}
+		whiteChecker.setPosition(6, 2)
+		if whiteChecker.Position() != point {
+			t.Error("checker is not right position.")
+		}
+	})
+
+	t.Run("Kill", func(t *testing.T) {
+		blackChecker.kill()
+		if blackChecker.IsAlive() {
+			t.Error("checker is alive after kill.")
+		}
+	})
 }
