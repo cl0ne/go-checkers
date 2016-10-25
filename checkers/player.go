@@ -7,14 +7,14 @@ type Player struct {
 	availableMoves map[*Checker][]Move
 }
 
-func newPlayer(checkersCount int, isWhite bool) Player {
+func newPlayer(checkersCount int, isWhite bool) *Player {
 	checkers := make([]Checker, checkersCount)
 	for i := range checkers {
 		checkers[i].color = isWhite
 		checkers[i].alive = true
 	}
 	availableMoves := make(map[*Checker][]Move)
-	return Player{
+	return &Player{
 		checkers:       checkers,
 		aliveCheckers:  checkersCount,
 		isWhite:        isWhite,

@@ -1,7 +1,7 @@
 package checkers
 
 type Game struct {
-	players      [2]Player
+	players      [2]*Player
 	board        *Board
 	activePlayer int
 	isFinished   bool
@@ -10,7 +10,7 @@ type Game struct {
 func NewGame() *Game {
 	boardSize := 8
 	checkerCount := 12
-	players := [...]Player{
+	players := [...]*Player{
 		newPlayer(checkerCount, true),
 		newPlayer(checkerCount, false),
 	}
@@ -23,6 +23,17 @@ func NewGame() *Game {
 
 func (g Game) GetBoard() *Board {
 	return g.board
+}
+
+func (g Game) getOpponent() *Player {
+	if g.activePlayer == 0 {
+		return g.players[1]
+	}
+	return g.players[0]
+}
+
+func (g Game) getCurrentPlayer() *Player {
+	return g.players[g.activePlayer]
 }
 
 var moveOffsets = [...]Point{
@@ -108,14 +119,14 @@ func (g *Game) Start() {
 			i++
 		}
 	}
+	g.updatePlayerMoves(g.getCurrentPlayer())
+}
 
-	for _, p := range g.players {
-		for i := range p.checkers {
-			c := &p.checkers[i]
-			moves := g.getAvailableMoves(c)
-			if len(moves) > 0 {
-				p.availableMoves[c] = moves
-			}
+func (g *Game) updatePlayerMoves(p *Player) {
+	for _, c := range p.GetAliveCheckers() {
+		moves := g.getAvailableMoves(c)
+		if len(moves) > 0 {
+			p.availableMoves[c] = moves
 		}
 	}
 }
