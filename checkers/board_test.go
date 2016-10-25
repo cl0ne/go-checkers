@@ -42,6 +42,28 @@ func TestBoardOperations(t *testing.T) {
 		}
 	})
 
+	t.Run("PlaceChecker", func(t *testing.T) {
+		checkers := []Checker{
+			newChecker(true), newChecker(false),
+			newChecker(true),
+		}
+		pos := Point{ X:-2, Y:-5}
+		ok := board.placeChecker(pos.X, pos.Y, &checkers[0])
+		if ok {
+			t.Error("Invalid placement at ", pos, ". Out of range of board.")
+		}
+		pos.X, pos.Y = 10, 10
+		ok = board.placeChecker(pos.X, pos.Y, &checkers[1])
+		if ok {
+			t.Error("Invalid placement at ", pos, ". Out of range of board.")
+		}
+		pos.X, pos.Y = 5, 6
+		ok = board.placeChecker(pos.X, pos.Y, &checkers[2])
+		if !ok {
+			t.Error("Valid placement at ", pos)
+		}
+	})
+
 	t.Run("ContainsPos", func(t *testing.T) {
 		point := Point{X: 7, Y: 8}
 		contains := board.ContainsPos(7, 8)
@@ -106,20 +128,25 @@ func TestBoardOperations(t *testing.T) {
 		checker := newChecker(true)
 		to := Point{X: 4, Y: 3}
 		board.placeChecker(from.X, from.Y, &checker)
-		board.moveChecker(from, to)
-		if !board.IsEmpty(from.X, from.Y) || board.IsEmpty(to.X, to.Y) {
+		ok := board.moveChecker(from, to)
+		if !ok {
 			t.Error("Checker wasn't moved from", from, "to", to)
 		}
 		from = to
 		to.X, to.Y = -3, -6
-		board.moveChecker(from, to)
-		if board.ContainsPos(to.X, to.Y) {
-			t.Error("Invalid position at ", to.String(), ". Out of range of board.")
+		ok = board.moveChecker(from, to)
+		if ok {
+			t.Error("Invalid position at ", to, ". Out of range of board.")
 		}
 		to.X, to.Y = 10, 8
 		board.moveChecker(from, to)
-		if board.ContainsPos(to.X, to.Y) {
-			t.Error("Invalid position at ", to.String(), ". Out of range of board.")
+		if ok {
+			t.Error("Invalid position at ", to, ". Out of range of board.")
+		}
+		to = from
+		ok = board.moveChecker(from, to)
+		if ok {
+			t.Error("Checker was moved on the same point ", to)
 		}
 	})
 }
