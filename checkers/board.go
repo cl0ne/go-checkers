@@ -38,11 +38,16 @@ func (b Board) Size() int {
 	return len(b.cells)
 }
 
-func (b *Board) placeChecker(x, y int, c *Checker) {
+func (b *Board) placeChecker(x, y int, c *Checker) bool {
+	if !b.ContainsPos(x, y) {
+		return false
+	}
+
 	b.cells[y][x] = c
 	if c != nil {
 		c.setPosition(x, y)
 	}
+	return true
 }
 
 func (b *Board) takeChecker(x, y int) *Checker {
@@ -51,15 +56,15 @@ func (b *Board) takeChecker(x, y int) *Checker {
 	return c
 }
 
-func (b *Board) moveChecker(from, to Point) {
+func (b *Board) moveChecker(from, to Point) bool {
 	if from == to {
-		return
+		return false
 	}
 	if !b.ContainsPos(from.X, from.Y) || !b.ContainsPos(to.X, to.Y) {
-		return
+		return false
 	}
 	c := b.takeChecker(from.X, from.Y)
-	b.placeChecker(to.X, to.Y, c)
+	return b.placeChecker(to.X, to.Y, c)
 }
 
 func (b Board) GetChecker(x, y int) *Checker {
