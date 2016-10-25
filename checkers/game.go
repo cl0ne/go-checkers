@@ -41,17 +41,24 @@ var moveOffsets = [...]Point{
 	Point{-1, -1}, Point{1, -1}, // back
 }
 
-func (g Game) getAvailableMoves(c *Checker) (moves []Move) {
-	if c == nil || !c.IsAlive() ||
-		g.board.GetChecker(c.Position().X, c.Position().Y) != c {
+// getAvailableMoves returns list of available moves for checker c.
+// Checker must be alive and present on the game's board!
+// Use capturesOnly to specify looking only for captures available to
+// the checker or for any moves allowed by the game rules
+func (g Game) getAvailableMoves(c *Checker, capturesOnly bool) (moves []Move) {
+	if c == nil || !c.IsAlive() {
 		return
 	}
+
 	pos := c.Position()
 	board := g.board
-	hasCaptures := false
+	if board.GetChecker(pos.X, pos.Y) != c {
+		return
+	}
+
 	lastRow := 0
 	if c.IsWhite() {
-		lastRow = g.board.LastRowIndex()
+		lastRow = board.LastRowIndex()
 	}
 	for _, offset := range moveOffsets {
 		var captureFound *Checker = nil
@@ -64,40 +71,42 @@ func (g Game) getAvailableMoves(c *Checker) (moves []Move) {
 
 			neighbour := board.GetChecker(target.X, target.Y)
 
-			if neighbour == nil {
-				if captureFound == nil {
-					if hasCaptures { // then ignore moves
-						if !c.IsQueen() {
-							break
-						}
-						continue // look only for captures
-					}
-
-					if !c.IsForwardMove(target) && !c.IsQueen() {
-						break
-					}
-				} else if !hasCaptures {
-					hasCaptures = true
-					moves = make([]Move, 1)
-				}
-
-				becomeQueen := !c.IsQueen() && target.Y == lastRow
-				moves = append(moves, Move{target, captureFound, becomeQueen})
-				if !c.IsQueen() {
+			if neighbour != nil {
+				if captureFound != nil { // blocked
 					break
 				}
+
+				if neighbour.IsWhite() == c.IsWhite() {
+					break
+				}
+
+				captureFound = neighbour
+				localPos = target
+
+				continue
 			}
 
-			if captureFound != nil { // blocked
+			if captureFound == nil {
+				if capturesOnly { // ignore moves
+					if c.IsQueen() {
+						continue // look for captures further
+					}
+					break
+				}
+
+				if !c.IsForwardMove(target) && !c.IsQueen() {
+					break
+				}
+			} else if !capturesOnly {
+				capturesOnly = true
+				moves = make([]Move, 1)
+			}
+
+			becomeQueen := !c.IsQueen() && target.Y == lastRow
+			moves = append(moves, Move{target, captureFound, becomeQueen})
+			if !c.IsQueen() {
 				break
 			}
-
-			if neighbour.IsWhite() == c.IsWhite() {
-				break
-			}
-
-			captureFound = neighbour
-			localPos = target
 		}
 	}
 	return
@@ -124,7 +133,7 @@ func (g *Game) Start() {
 
 func (g *Game) updatePlayerMoves(p *Player) {
 	for _, c := range p.GetAliveCheckers() {
-		moves := g.getAvailableMoves(c)
+		moves := g.getAvailableMoves(c, false)
 		if len(moves) > 0 {
 			p.availableMoves[c] = moves
 		}
