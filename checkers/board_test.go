@@ -148,5 +148,11 @@ func TestBoardOperations(t *testing.T) {
 		if ok {
 			t.Error("Checker was moved on the same point ", to)
 		}
+		to.X, to.Y = 5, 4
+		board.placeChecker(to.X, to.Y, &checker)
+		ok = board.moveChecker(from, to)
+		if ok {
+			t.Error("Checker shouldn't move to occupied ", to)
+		}
 	})
 }
