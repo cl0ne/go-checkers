@@ -1,5 +1,10 @@
 package checkers
 
+import (
+	"fmt"
+	"strings"
+)
+
 /*
 Checker board class
 For example:
@@ -36,6 +41,33 @@ func NewBoard(size int) *Board {
 
 func (b Board) Size() int {
 	return len(b.cells)
+}
+
+var checkerDebug = map[bool]map[bool]string{
+	false: {false: "b", true: "B"},
+	true:  {false: "w", true: "W"},
+}
+
+func (b Board) DebugString() string {
+	rows := make([]string, b.Size()+1)
+	for r := 0; r < b.Size(); r++ {
+		cols := make([]string, b.Size()+1)
+		cols[0] = fmt.Sprintf("%-2d|", r)
+		for c := 0; c < b.Size(); c++ {
+			cell := " "
+			if !b.IsWhiteSquare(Point{c, r}) {
+				ch := b.GetChecker(c, r)
+				if ch == nil {
+					cell = "."
+				} else {
+					cell = checkerDebug[ch.IsWhite()][ch.IsQueen()]
+				}
+			}
+			cols[c+1] = cell
+		}
+		rows[r] = strings.Join(cols, "")
+	}
+	return strings.Join(rows, "\n")
 }
 
 func (b *Board) clear() {
