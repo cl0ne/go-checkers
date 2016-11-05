@@ -100,4 +100,7 @@ func TestGetAvailableMoves(t *testing.T) {
 		}
 	}
 
+	if t.Failed() {
+		t.Logf("Current board state:\n%s", board.DebugString())
+	}
 }
