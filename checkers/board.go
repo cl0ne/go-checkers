@@ -38,6 +38,14 @@ func (b Board) Size() int {
 	return len(b.cells)
 }
 
+func (b *Board) clear() {
+	for _, r := range b.cells {
+		for c := range r {
+			r[c] = nil
+		}
+	}
+}
+
 func (b *Board) placeChecker(x, y int, c *Checker) bool {
 	if !b.ContainsPos(x, y) {
 		return false
