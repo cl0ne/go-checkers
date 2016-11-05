@@ -115,6 +115,9 @@ func (b Board) GetChecker(x, y int) *Checker {
 }
 
 func (b Board) IsEmpty(x, y int) bool {
+	if !b.ContainsPos(x, y) {
+		return true
+	}
 	return b.cells[y][x] == nil
 }
 

@@ -1,8 +1,6 @@
 package checkers
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestNewBoard(t *testing.T) {
 	uselessBoard := NewBoard(0)
@@ -43,37 +41,58 @@ func TestBoardOperations(t *testing.T) {
 	})
 
 	t.Run("PlaceChecker", func(t *testing.T) {
-		checkers := []Checker{
-			newChecker(true), newChecker(false),
-			newChecker(true),
+		cases := []*struct {
+			c      Checker
+			pos    Point
+			result bool
+		}{
+			{newChecker(true), Point{X: -2, Y: -5}, false},
+			{newChecker(false), Point{X: 10, Y: 10}, false},
+			{newChecker(true), Point{X: 5, Y: 6}, true},
 		}
-		pos := Point{X: -2, Y: -5}
-		ok := board.placeChecker(pos.X, pos.Y, &checkers[0])
-		if ok {
-			t.Error("Invalid placement at ", pos, ". Out of range of board.")
-		}
-		pos.X, pos.Y = 10, 10
-		ok = board.placeChecker(pos.X, pos.Y, &checkers[1])
-		if ok {
-			t.Error("Invalid placement at ", pos, ". Out of range of board.")
-		}
-		pos.X, pos.Y = 5, 6
-		ok = board.placeChecker(pos.X, pos.Y, &checkers[2])
-		if !ok {
-			t.Error("Valid placement at ", pos)
+		for _, c := range cases {
+			ok := board.placeChecker(c.pos.X, c.pos.Y, &c.c)
+			if ok != c.result {
+				t.Error("Checker placement at", c.pos, "gave unexpected:", ok)
+				continue
+			}
+			if !ok && !board.IsEmpty(c.pos.X, c.pos.Y) {
+				t.Error("Place at ", c.pos, "should be empty: checker is not placed")
+			}
+			if ok {
+				if c.c.Position() != c.pos {
+					t.Error("Checker position should be set to ", c.pos)
+				}
+				if &c.c != board.GetChecker(c.pos.X, c.pos.Y) {
+					t.Error("Place at ", c.pos, "should contain placed checker")
+				}
+			}
 		}
 	})
 
 	t.Run("ContainsPos", func(t *testing.T) {
-		point := Point{X: 7, Y: 8}
-		contains := board.ContainsPos(7, 8)
-		if contains {
-			t.Error("Cell", point, "is outside of the board.")
+		boardSize := board.Size()
+		for x := 0; x < board.Size(); x++ {
+			for y := 0; y < board.Size(); y++ {
+				contains := board.ContainsPos(x, y)
+				if !contains {
+					t.Error("Cell", Point{X: x, Y: y}, "is within the board.")
+				}
+			}
 		}
-		point.X, point.Y = 3, 2
-		contains = board.ContainsPos(3, 2)
-		if !contains {
-			t.Error("Cell", point, "is within the board.")
+		outside := []Point{
+			Point{-1, -1},
+			Point{0, -1},
+			Point{-1, 0},
+			Point{boardSize, boardSize},
+			Point{boardSize, 0},
+			Point{0, boardSize},
+		}
+		for _, p := range outside {
+			contains := board.ContainsPos(p.X, p.Y)
+			if contains {
+				t.Error("Cell", p, "is outside of the board.")
+			}
 		}
 	})
 
