@@ -47,7 +47,7 @@ func TestBoardOperations(t *testing.T) {
 			newChecker(true), newChecker(false),
 			newChecker(true),
 		}
-		pos := Point{ X:-2, Y:-5}
+		pos := Point{X: -2, Y: -5}
 		ok := board.placeChecker(pos.X, pos.Y, &checkers[0])
 		if ok {
 			t.Error("Invalid placement at ", pos, ". Out of range of board.")
@@ -151,7 +151,7 @@ func TestBoardOperations(t *testing.T) {
 		to.X, to.Y = 5, 4
 		board.placeChecker(to.X, to.Y, &checker)
 		ok = board.moveChecker(from, to)
-		if ok {
+		if ok { // Questionable requirement
 			t.Error("Checker shouldn't move to occupied ", to)
 		}
 	})

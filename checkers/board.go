@@ -63,6 +63,9 @@ func (b *Board) moveChecker(from, to Point) bool {
 	if !b.ContainsPos(from.X, from.Y) || !b.ContainsPos(to.X, to.Y) {
 		return false
 	}
+	if !b.IsEmpty(to.X, to.Y) {
+		return false
+	}
 	c := b.takeChecker(from.X, from.Y)
 	return b.placeChecker(to.X, to.Y, c)
 }
