@@ -99,7 +99,7 @@ func (g Game) getAvailableMoves(c *Checker, capturesOnly bool) (moves []Move) {
 				}
 			} else if !capturesOnly {
 				capturesOnly = true
-				moves = make([]Move, 1)
+				moves = make([]Move, 0, 1)
 			}
 
 			becomeQueen := !c.IsQueen() && target.Y == lastRow
@@ -132,9 +132,17 @@ func (g *Game) Start() {
 }
 
 func (g *Game) updatePlayerMoves(p *Player) {
+	p.clearAvailableMoves()
+
+	capturesOnly := false
 	for _, c := range p.GetAliveCheckers() {
-		moves := g.getAvailableMoves(c, false)
+		moves := g.getAvailableMoves(c, capturesOnly)
+
 		if len(moves) > 0 {
+			if !capturesOnly && moves[0].IsCapture() {
+				p.clearAvailableMoves()
+				capturesOnly = true
+			}
 			p.availableMoves[c] = moves
 		}
 	}

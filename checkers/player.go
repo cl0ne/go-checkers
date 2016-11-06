@@ -22,6 +22,10 @@ func newPlayer(checkersCount int, isWhite bool) *Player {
 	}
 }
 
+func (p *Player) clearAvailableMoves() {
+	p.availableMoves = make(map[*Checker][]Move)
+}
+
 func (p Player) GetAliveCheckers() (alive []*Checker) {
 	if p.aliveCheckersCount == 0 {
 		return
