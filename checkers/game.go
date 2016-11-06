@@ -25,11 +25,32 @@ func (g Game) GetBoard() *Board {
 	return g.board
 }
 
+func (g Game) IsFinished() bool {
+	return g.isFinished
+}
+
+func (g Game) IsWhitesMove() bool {
+	return g.activePlayer == 0
+}
+
+func (g Game) IsBlacksMove() bool {
+	return g.activePlayer == 1
+}
+
+func (g Game) IsBlackWin() bool {
+	return g.IsFinished() && g.IsWhitesMove()
+}
+
+func (g Game) IsWhiteWin() bool {
+	return g.IsFinished() && g.IsBlacksMove()
+}
+
 func (g Game) getOpponent() *Player {
-	if g.activePlayer == 0 {
-		return g.players[1]
-	}
-	return g.players[0]
+	return g.players[g.getOpponentIndex()]
+}
+
+func (g Game) getOpponentIndex() int {
+	return g.activePlayer ^ 1
 }
 
 func (g Game) getCurrentPlayer() *Player {
@@ -146,4 +167,55 @@ func (g *Game) updatePlayerMoves(p *Player) {
 			p.availableMoves[c] = moves
 		}
 	}
+}
+
+func dupMoves(moves []Point) (clone []Point) {
+	clone = make([]Point, len(moves))
+	copy(clone, moves)
+	return
+}
+
+func (g *Game) Update() {
+	if g.IsFinished() {
+		return
+	}
+	player := g.getCurrentPlayer()
+	opponent := g.getOpponent()
+
+	availableCheckers := player.GetAvailabeCheckers()
+	checkerIndex := 0 // UI.SelectChecker(availableCheckers)
+	selectedChecker := availableCheckers[checkerIndex]
+
+	availableMoves := player.availableMoves[selectedChecker]
+
+	for {
+		selectedMove := 0 // UI.SelectTargetPos(dupMoves(availableMoves))
+		move := availableMoves[selectedMove]
+
+		g.board.moveChecker(selectedChecker.Position(), move.Target)
+
+		if move.BecomeQueen {
+			selectedChecker.makeQueen()
+		}
+
+		if !move.IsCapture() {
+			break
+		}
+
+		opponent.aliveCheckersCount--
+		capturePos := move.CapturedPos()
+		captured := g.board.takeChecker(capturePos.X, capturePos.Y)
+		captured.kill()
+
+		captures := g.getAvailableMoves(selectedChecker, true)
+		if len(captures) == 0 {
+			break
+		}
+		availableMoves = captures
+	}
+
+	player.clearAvailableMoves()
+	g.updatePlayerMoves(opponent)
+	g.isFinished = !(opponent.HasAliveCheckers() && opponent.HasAvailableMoves())
+	g.activePlayer = g.getOpponentIndex()
 }
