@@ -2,6 +2,7 @@ package checkers
 
 import (
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -49,23 +50,24 @@ var checkerDebug = map[bool]map[bool]string{
 }
 
 func (b Board) DebugString() string {
-	rows := make([]string, b.Size()+1)
-	for r := 0; r < b.Size(); r++ {
-		cols := make([]string, b.Size()+1)
-		cols[0] = fmt.Sprintf("%-2d|", r)
-		for c := 0; c < b.Size(); c++ {
+	size := b.Size()
+	rowNumberFormat := fmt.Sprintf("%%-%dd|", int(math.Floor(math.Log10(2)+1)))
+	rows := make([]string, size+1)
+	for r := 0; r < size; r++ {
+		cols := make([]string, size+2)
+		cols[0] = fmt.Sprintf(rowNumberFormat, r)
+		cols[size+1] = "|"
+		for c := 0; c < size; c++ {
 			cell := " "
-			if !b.IsWhiteSquare(Point{c, r}) {
-				ch := b.GetChecker(c, r)
-				if ch == nil {
-					cell = "."
-				} else {
-					cell = checkerDebug[ch.IsWhite()][ch.IsQueen()]
-				}
+			ch := b.GetChecker(c, r)
+			if ch != nil {
+				cell = checkerDebug[ch.IsWhite()][ch.IsQueen()]
+			} else if !b.IsWhiteSquare(Point{c, r}) {
+				cell = "."
 			}
 			cols[c+1] = cell
 		}
-		rows[r] = strings.Join(cols, "")
+		rows[size-r-1] = strings.Join(cols, "")
 	}
 	return strings.Join(rows, "\n")
 }
