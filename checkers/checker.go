@@ -1,5 +1,7 @@
 package checkers
 
+import "fmt"
+
 type Checker struct {
 	position Point
 	color    bool
@@ -9,9 +11,9 @@ type Checker struct {
 
 func newChecker(isWhite bool) Checker {
 	return Checker{
-		color:    isWhite,
-		queen:    false,
-		alive:    true,
+		color: isWhite,
+		queen: false,
+		alive: true,
 	}
 }
 
@@ -46,6 +48,21 @@ func (ch *Checker) makeQueen() {
 
 func (ch Checker) IsAlive() bool {
 	return ch.alive
+}
+
+var stateMap = map[string]map[bool]string{
+	"alive": {true: "alive", false: "dead"},
+	"color": {true: "white", false: "black"},
+	"queen": {true: " queen", false: ""},
+}
+
+func (ch Checker) String() string {
+	return fmt.Sprintf("<%v %v%v %v>",
+		stateMap["alive"][ch.IsAlive()],
+		stateMap["color"][ch.IsWhite()],
+		stateMap["queen"][ch.IsQueen()],
+		ch.Position(),
+	)
 }
 
 func (ch *Checker) kill() {
