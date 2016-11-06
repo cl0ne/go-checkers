@@ -62,9 +62,10 @@ func (g Game) getAvailableMoves(c *Checker, capturesOnly bool) (moves []Move) {
 	}
 	for _, offset := range moveOffsets {
 		var captureFound *Checker = nil
-		localPos := pos
+		target := pos
 		for {
-			target := localPos.Add(offset)
+			target = target.Add(offset)
+
 			if !board.ContainsPos(target.X, target.Y) {
 				break
 			}
@@ -81,7 +82,6 @@ func (g Game) getAvailableMoves(c *Checker, capturesOnly bool) (moves []Move) {
 				}
 
 				captureFound = neighbour
-				localPos = target
 
 				continue
 			}
