@@ -14,88 +14,63 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestGetAvailableMoves(t *testing.T) {
+	// TODO: Fix positions (checkers are placed on white cells!)
 	checkers := []*struct {
-		checker Checker
-		X, Y    int
-		moves   []Move
+		ch   Checker
+		X, Y int
 	}{
-		{newChecker(false), 4, 5, nil},
-		{newChecker(true), 5, 6, []Move{
-			Move{Target: Point{X: 4, Y: 7}, BecomeQueen: true},
-		}},
-		{newChecker(false), 3, 6, []Move{
-			Move{Target: Point{X: 2, Y: 5}},
-		}},
-		{newChecker(true), 3, 4, []Move{
-			Move{Target: Point{X: 2, Y: 5}},
-		}},
-		{newChecker(false), 5, 4, []Move{
-			Move{Target: Point{X: 4, Y: 3}},
-		}},
-		{newChecker(true), 6, 7, nil},
-		{newChecker(false), 2, 7, []Move{
-			Move{Target: Point{X: 1, Y: 6}},
-		}},
-		{newChecker(true), 2, 3, []Move{
-			Move{Target: Point{X: 1, Y: 4}},
-		}},
-		{newChecker(false), 6, 3, []Move{
+		{newChecker(false), 4, 5},
+		{newChecker(true), 5, 6},
+		{newChecker(false), 3, 6},
+		{newChecker(true), 3, 4},
+		{newChecker(false), 5, 4},
+		{newChecker(true), 6, 7},
+		{newChecker(false), 2, 7},
+		{newChecker(true), 2, 3},
+		{newChecker(false), 6, 3},
+	}
+
+	expectedMoves := [][]Move{
+		nil,
+		{Move{Target: Point{X: 4, Y: 7}, BecomeQueen: true}},
+		{Move{Target: Point{X: 2, Y: 5}}},
+		{Move{Target: Point{X: 2, Y: 5}}},
+		{Move{Target: Point{X: 4, Y: 3}}},
+		nil,
+		{Move{Target: Point{X: 1, Y: 6}}},
+		{Move{Target: Point{X: 1, Y: 4}}},
+		{
 			Move{Target: Point{X: 5, Y: 2}},
 			Move{Target: Point{X: 7, Y: 2}},
-		}},
-	}
-	cases_backmove := []struct {
-		checker Checker
-		X, Y    int
-		moves   []Move
-	}{
-		{newChecker(true), 4, 2, []Move{
-			Move{Target: Point{X: 3, Y: 3}},
-			Move{Target: Point{X: 5, Y: 3}},
-		}},
-		{newChecker(false), 1, 5, []Move{
-			Move{Target: Point{X: 0, Y: 4}},
-			Move{Target: Point{X: 2, Y: 4}},
-		}},
-	}
-	cases_range := []struct {
-		checker        Checker
-		coordX, coordY int
-	}{
-		{newChecker(true), -3, -5},
-		{newChecker(false), 10, 10},
+		},
 	}
 
 	game := NewGame()
 	board := game.GetBoard()
 
-	for _, c := range cases_range {
-		board.placeChecker(c.coordX, c.coordY, &c.checker)
-		moves := game.getAvailableMoves(&c.checker, false)
-		if moves != nil {
-			t.Error("Checker at ", c.checker.Position(), " shouldn't have moves.")
-		}
-	}
-
-	for _, c := range cases_backmove {
-		board.placeChecker(c.X, c.Y, &c.checker)
-		moves := game.getAvailableMoves(&c.checker, false)
-		if !reflect.DeepEqual(moves, c.moves) {
-			t.Error("Checker can move only forward.")
+	for _, c := range checkers {
+		moves := game.getAvailableMoves(&c.ch, false)
+		if len(moves) > 0 {
+			t.Error("Checker at", c.ch.Position(), "is not on board but has moves:", moves)
 		}
 	}
 
 	for _, c := range checkers {
-		board.placeChecker(c.X, c.Y, &c.checker)
+		board.placeChecker(c.X, c.Y, &c.ch)
 	}
 
-	for _, i := range checkers {
-		moves := game.getAvailableMoves(&i.checker, false)
-		if !reflect.DeepEqual(moves, i.moves) {
-			if i.moves == nil {
-				t.Error("Checker at (", i.X, ",", i.Y, ") shouldn't have moves.")
+	for i, c := range checkers {
+		moves := game.getAvailableMoves(&c.ch, false)
+		// we should compare sorted moves (both expected and acquired from game)
+		// since order can be different. First we have to compare lengths of
+		// both slices and only the do in-depth compare (i.e. sort and compare
+		// elements). It's requied to extract comparison code ino separate
+		// function.
+		if !reflect.DeepEqual(moves, expectedMoves[i]) {
+			if expectedMoves[i] == nil {
+				t.Error("Checker at", c.ch.Position(), "shouldn't have moves.")
 			} else {
-				t.Error("Checker at (", i.X, ",", i.Y, ") should have at least 1 move.")
+				t.Error("Checker at", c.ch.Position(), "should have at least 1 move.")
 			}
 		}
 	}
