@@ -1,9 +1,34 @@
 package checkers
 
 import (
-	"reflect"
+	"sort"
 	"testing"
 )
+
+type ByTarget []Move
+
+func (m ByTarget) Len() int {
+	return len(m)
+}
+
+func (m ByTarget) Less(i, j int) bool {
+	return m[i].Target.Less(m[j].Target)
+}
+
+func (m ByTarget) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
+}
+
+func CompareMoves(moves, expected []Move) bool {
+	sort.Sort(ByTarget(moves))
+	sort.Sort(ByTarget(expected))
+	for i := range moves {
+		if moves[i] != expected[i] {
+			return false
+		}
+	}
+	return true
+}
 
 func TestNewGame(t *testing.T) {
 	game := NewGame()
@@ -63,16 +88,9 @@ func TestGetAvailableMoves(t *testing.T) {
 
 	for i, c := range checkers {
 		moves := game.getAvailableMoves(&c.ch, false)
-		// we should compare sorted moves (both expected and acquired from game)
-		// since order can be different. First we have to compare lengths of
-		// both slices and only the do in-depth compare (i.e. sort and compare
-		// elements). It's requied to extract comparison code ino separate
-		// function.
-		if !reflect.DeepEqual(moves, expectedMoves[i]) {
-			if expectedMoves[i] == nil {
-				t.Error("Checker at", c.ch.Position(), "shouldn't have moves.")
-			} else {
-				t.Error("Checker at", c.ch.Position(), "should have at least 1 move.")
+		if len(moves) == len(expectedMoves[i]) {
+			if !CompareMoves(moves, expectedMoves[i]) {
+				t.Error("Moves got: ", moves, " expected: ", expectedMoves[i])
 			}
 		}
 	}
