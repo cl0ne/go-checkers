@@ -18,10 +18,11 @@ func (p Point) Sub(q Point) Point {
 }
 
 func (p Point) Equal(q Point) bool {
-	if p.X == q.X && p.Y == q.Y {
-		return true
-	}
-	return false
+	return p.X == q.X && p.Y == q.Y
+}
+
+func (p Point) Less(q Point) bool {
+	return p.X < q.X || (p.Y < q.Y && p.X == q.X)
 }
 
 func (p Point) String() string {
