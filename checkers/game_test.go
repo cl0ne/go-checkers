@@ -14,34 +14,36 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestGetAvailableMoves(t *testing.T) {
-	// TODO: Fix positions (checkers are placed on white cells!)
 	checkers := []*struct {
 		ch   Checker
 		X, Y int
 	}{
-		{newChecker(false), 4, 5},
-		{newChecker(true), 5, 6},
-		{newChecker(false), 3, 6},
-		{newChecker(true), 3, 4},
-		{newChecker(false), 5, 4},
-		{newChecker(true), 6, 7},
-		{newChecker(false), 2, 7},
-		{newChecker(true), 2, 3},
-		{newChecker(false), 6, 3},
+		{newChecker(false), 4, 4},
+		{newChecker(true), 5, 5},
+		{newChecker(false), 3, 5},
+		{newChecker(true), 3, 3},
+		{newChecker(false), 5, 3},
+		{newChecker(true), 6, 6},
+		{newChecker(false), 2, 6},
+		{newChecker(true), 2, 2},
+		{newChecker(false), 6, 2},
 	}
 
 	expectedMoves := [][]Move{
 		nil,
-		{Move{Target: Point{X: 4, Y: 7}, BecomeQueen: true}},
-		{Move{Target: Point{X: 2, Y: 5}}},
-		{Move{Target: Point{X: 2, Y: 5}}},
-		{Move{Target: Point{X: 4, Y: 3}}},
-		nil,
-		{Move{Target: Point{X: 1, Y: 6}}},
-		{Move{Target: Point{X: 1, Y: 4}}},
+		{Move{Target: Point{X: 4, Y: 6}}},
+		{Move{Target: Point{X: 2, Y: 4}}},
+		{Move{Target: Point{X: 2, Y: 4}}},
+		{Move{Target: Point{X: 4, Y: 2}}},
 		{
-			Move{Target: Point{X: 5, Y: 2}},
-			Move{Target: Point{X: 7, Y: 2}},
+			Move{Target: Point{X: 7, Y: 7}, BecomeQueen: true},
+			Move{Target: Point{X: 5, Y: 7}, BecomeQueen: true},
+		},
+		{Move{Target: Point{X: 1, Y: 5}}},
+		{Move{Target: Point{X: 1, Y: 3}}},
+		{
+			Move{Target: Point{X: 5, Y: 1}},
+			Move{Target: Point{X: 7, Y: 1}},
 		},
 	}
 
