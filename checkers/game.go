@@ -7,12 +7,12 @@ type Game struct {
 	isFinished   bool
 }
 
-func NewGame() *Game {
+func NewGame(whiteInput, blackInput PlayerPoller) *Game {
 	boardSize := 8
 	checkerCount := 12
 	players := [...]*Player{
-		newPlayer(checkerCount, true),
-		newPlayer(checkerCount, false),
+		newPlayer(checkerCount, true, whiteInput),
+		newPlayer(checkerCount, false, blackInput),
 	}
 	board := NewBoard(boardSize)
 	if board == nil {
@@ -169,12 +169,6 @@ func (g *Game) updatePlayerMoves(p *Player) {
 	}
 }
 
-func dupMoves(moves []Point) (clone []Point) {
-	clone = make([]Point, len(moves))
-	copy(clone, moves)
-	return
-}
-
 func (g *Game) Update() {
 	if g.IsFinished() {
 		return
@@ -183,13 +177,13 @@ func (g *Game) Update() {
 	opponent := g.getOpponent()
 
 	availableCheckers := player.GetAvailabeCheckers()
-	checkerIndex := 0 // UI.SelectChecker(availableCheckers)
+	checkerIndex := player.poller.SelectChecker(availableCheckers)
 	selectedChecker := availableCheckers[checkerIndex]
 
 	availableMoves := player.availableMoves[selectedChecker]
 
 	for {
-		selectedMove := 0 // UI.SelectTargetPos(dupMoves(availableMoves))
+		selectedMove := player.poller.SelectTargetPos(availableMoves)
 		move := availableMoves[selectedMove]
 
 		g.board.moveChecker(selectedChecker.Position(), move.Target)

@@ -41,8 +41,25 @@ func drawBoard(b *checkers.Board) {
 	fmt.Println()
 }
 
+// TODO: implement fancy input
+type PlayerInput struct {
+	name string
+}
+
+func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
+	return 0
+}
+
+func (i PlayerInput) SelectTargetPos(availableMoves []checkers.Move) int {
+	return 0
+}
+
 func main() {
-	g := checkers.NewGame()
+	inputs := []checkers.PlayerPoller{
+		&PlayerInput{"White"},
+		&PlayerInput{"Black"},
+	}
+	g := checkers.NewGame(inputs[0], inputs[1])
 	g.Start()
 
 	drawBoard(g.GetBoard())
@@ -50,14 +67,14 @@ func main() {
 		if g.IsWhitesMove() {
 			fmt.Println("White moves:")
 		} else {
-			fmt.Println("Black moves:")
+			fmt.Println(empty("Black"), "moves:")
 		}
 		g.Update()
 		drawBoard(g.GetBoard())
 		fmt.Println()
 	}
 	if g.IsBlackWin() {
-		fmt.Println("Black wins")
+		fmt.Println(empty("Black"), "wins")
 	} else {
 		fmt.Println("White wins")
 	}

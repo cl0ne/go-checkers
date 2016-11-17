@@ -5,9 +5,10 @@ type Player struct {
 	aliveCheckersCount int
 	isWhite            bool
 	availableMoves     map[*Checker][]Move
+	poller             PlayerPoller
 }
 
-func newPlayer(checkersCount int, isWhite bool) *Player {
+func newPlayer(checkersCount int, isWhite bool, poller PlayerPoller) *Player {
 	checkers := make([]Checker, checkersCount)
 	for i := range checkers {
 		checkers[i].color = isWhite
@@ -19,6 +20,7 @@ func newPlayer(checkersCount int, isWhite bool) *Player {
 		aliveCheckersCount: checkersCount,
 		isWhite:            isWhite,
 		availableMoves:     availableMoves,
+		poller:             poller,
 	}
 }
 
