@@ -145,6 +145,7 @@ func TestBoardOperations(t *testing.T) {
 	t.Run("MoveChecker", func(t *testing.T) {
 		from := Point{X: 3, Y: 4}
 		checker := newChecker(true)
+		checker2 := newChecker(true)
 		to := Point{X: 4, Y: 3}
 		board.placeChecker(from.X, from.Y, &checker)
 		ok := board.moveChecker(from, to)
@@ -168,10 +169,10 @@ func TestBoardOperations(t *testing.T) {
 			t.Error("Checker was moved on the same point ", to)
 		}
 		to.X, to.Y = 5, 4
-		board.placeChecker(to.X, to.Y, &checker)
+		board.placeChecker(to.X, to.Y, &checker2)
 		ok = board.moveChecker(from, to)
-		if ok { // Questionable requirement
-			t.Error("Checker shouldn't move to occupied ", to)
+		if ok {
+			t.Error("Checker at ", from, " shouldn't move to occupied ", to)
 		}
 	})
 }
