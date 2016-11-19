@@ -47,11 +47,23 @@ type PlayerInput struct {
 }
 
 func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
-	return 0
+	fmt.Println(i.name, ", take a checker:")
+	for i := range availableCheckers {
+		fmt.Println(i+1, availableCheckers[i].String())
+	}
+	var checkerNumber int
+	fmt.Scanln(&checkerNumber)
+	return checkerNumber - 1
 }
 
 func (i PlayerInput) SelectTargetPos(availableMoves []checkers.Move) int {
-	return 0
+	fmt.Println(i.name, ", where would you go?")
+	for i := range availableMoves {
+		fmt.Println(i+1, availableMoves[i].Target.String())
+	}
+	var targetNumber int
+	fmt.Scanln(&targetNumber)
+	return targetNumber - 1
 }
 
 func main() {
