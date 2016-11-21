@@ -41,15 +41,29 @@ func drawBoard(b *checkers.Board) {
 	fmt.Println()
 }
 
-// TODO: implement fancy input
 type PlayerInput struct {
 	name string
 }
 
 func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
-	fmt.Println(i.name, ", take a checker:")
+	var header = "abcdefghijklmnopqrstuvwxyz"
+	fmt.Printf("%s, take a checker:\n", i.name)
 	for i := range availableCheckers {
-		fmt.Println(i+1, availableCheckers[i].String())
+		var posX = availableCheckers[i].Position().X
+		var posY = availableCheckers[i].Position().Y
+		if availableCheckers[i].IsWhite() {
+			if availableCheckers[i].IsQueen() {
+				fmt.Printf("%d. White queen on %c%d\n", i+1, header[posX], posY+1)
+			} else {
+				fmt.Printf("%d. White on %c%d\n", i+1, header[posX], posY+1)
+			}
+		} else {
+			if availableCheckers[i].IsQueen() {
+				fmt.Printf("%d. %s queen on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
+			} else {
+				fmt.Printf("%d. %s on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
+			}
+		}
 	}
 	var checkerNumber int
 	fmt.Scanln(&checkerNumber)
@@ -57,9 +71,12 @@ func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
 }
 
 func (i PlayerInput) SelectTargetPos(availableMoves []checkers.Move) int {
-	fmt.Println(i.name, ", where would you go?")
+	var header = "abcdefghijklmnopqrstuvwxyz"
+	fmt.Printf("%s, where would you go?\n", i.name)
 	for i := range availableMoves {
-		fmt.Println(i+1, availableMoves[i].Target.String())
+		var posX = availableMoves[i].Target.X
+		var posY = availableMoves[i].Target.Y
+		fmt.Printf("%d. To %c%d\n", i+1, header[posX], posY+1)
 	}
 	var targetNumber int
 	fmt.Scanln(&targetNumber)
