@@ -47,40 +47,62 @@ type PlayerInput struct {
 
 func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
 	var header = "abcdefghijklmnopqrstuvwxyz"
-	fmt.Printf("%s, take a checker:\n", i.name)
-	for i := range availableCheckers {
-		var posX = availableCheckers[i].Position().X
-		var posY = availableCheckers[i].Position().Y
-		if availableCheckers[i].IsWhite() {
-			if availableCheckers[i].IsQueen() {
-				fmt.Printf("%d. White queen on %c%d\n", i+1, header[posX], posY+1)
+	for {
+		fmt.Printf("%s, take a checker:\n", i.name)
+		for i := range availableCheckers {
+			var posX = availableCheckers[i].Position().X
+			var posY = availableCheckers[i].Position().Y
+			if availableCheckers[i].IsWhite() {
+				if availableCheckers[i].IsQueen() {
+					fmt.Printf("%d. White queen on %c%d\n", i+1, header[posX], posY+1)
+				} else {
+					fmt.Printf("%d. White on %c%d\n", i+1, header[posX], posY+1)
+				}
 			} else {
-				fmt.Printf("%d. White on %c%d\n", i+1, header[posX], posY+1)
-			}
-		} else {
-			if availableCheckers[i].IsQueen() {
-				fmt.Printf("%d. %s queen on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
-			} else {
-				fmt.Printf("%d. %s on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
+				if availableCheckers[i].IsQueen() {
+					fmt.Printf("%d. %s queen on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
+				} else {
+					fmt.Printf("%d. %s on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
+				}
 			}
 		}
+		var checkerNumber int
+		_, ok := fmt.Scanln(&checkerNumber)
+		if ok == nil && (checkerNumber-1) >= 0 && (checkerNumber-1) < len(availableCheckers) {
+			return checkerNumber - 1
+		} else {
+			if ok != nil {
+				var discard string
+				fmt.Scanln(&discard)
+			}
+			fmt.Printf("Nope, dude. This variant doesn't exist! Pick another\n")
+			continue
+		}
 	}
-	var checkerNumber int
-	fmt.Scanln(&checkerNumber)
-	return checkerNumber - 1
 }
 
 func (i PlayerInput) SelectTargetPos(availableMoves []checkers.Move) int {
 	var header = "abcdefghijklmnopqrstuvwxyz"
-	fmt.Printf("%s, where would you go?\n", i.name)
-	for i := range availableMoves {
-		var posX = availableMoves[i].Target.X
-		var posY = availableMoves[i].Target.Y
-		fmt.Printf("%d. To %c%d\n", i+1, header[posX], posY+1)
+	for {
+		fmt.Printf("%s, where would you go?\n", i.name)
+		for i := range availableMoves {
+			var posX = availableMoves[i].Target.X
+			var posY = availableMoves[i].Target.Y
+			fmt.Printf("%d. To %c%d\n", i+1, header[posX], posY+1)
+		}
+		var targetNumber int
+		_, ok := fmt.Scanln(&targetNumber)
+		if ok == nil && (targetNumber-1) >= 0 && (targetNumber-1) < len(availableMoves) {
+			return targetNumber - 1
+		} else {
+			if ok != nil {
+				var discard string
+				fmt.Scanln(&discard)
+			}
+			fmt.Printf("Nope, dude. This variant doesn't exist! Pick another\n")
+			continue
+		}
 	}
-	var targetNumber int
-	fmt.Scanln(&targetNumber)
-	return targetNumber - 1
 }
 
 func main() {
