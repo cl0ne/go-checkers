@@ -30,8 +30,21 @@ func CompareMoves(moves, expected []Move) bool {
 	return true
 }
 
+type PollerMock struct {
+	name string
+}
+
+func (i PollerMock) SelectChecker(availableCheckers []*Checker) int {
+	return 0
+}
+
+func (i PollerMock) SelectTargetPos(availableMoves []Move) int {
+	return 0
+}
+
 func TestNewGame(t *testing.T) {
-	game := NewGame()
+	inputMock := &PollerMock{}
+	game := NewGame(inputMock, inputMock)
 	board := game.GetBoard()
 	if board == nil {
 		t.Error("Board wasn't created.")
@@ -72,7 +85,8 @@ func TestGetAvailableMoves(t *testing.T) {
 		},
 	}
 
-	game := NewGame()
+	inputMock := &PollerMock{}
+	game := NewGame(inputMock, inputMock)
 	board := game.GetBoard()
 
 	for _, c := range checkers {
