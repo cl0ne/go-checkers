@@ -45,63 +45,63 @@ type PlayerInput struct {
 	name string
 }
 
+var columnNames = "abcdefghijklmnopqrstuvwxyz"
+
 func (i PlayerInput) SelectChecker(availableCheckers []*checkers.Checker) int {
-	var header = "abcdefghijklmnopqrstuvwxyz"
+	colorMap := map[bool]string{
+		true: "White", false: "Black",
+	}
 	for {
 		fmt.Printf("%s, take a checker:\n", i.name)
-		for i := range availableCheckers {
-			var posX = availableCheckers[i].Position().X
-			var posY = availableCheckers[i].Position().Y
-			if availableCheckers[i].IsWhite() {
-				if availableCheckers[i].IsQueen() {
-					fmt.Printf("%d. White queen on %c%d\n", i+1, header[posX], posY+1)
-				} else {
-					fmt.Printf("%d. White on %c%d\n", i+1, header[posX], posY+1)
-				}
-			} else {
-				if availableCheckers[i].IsQueen() {
-					fmt.Printf("%d. %s queen on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
-				} else {
-					fmt.Printf("%d. %s on %c%d\n", i+1, empty("Black"), header[posX], posY+1)
-				}
+		for i, c := range availableCheckers {
+			column := columnNames[c.Position().X+1]
+			row := c.Position().Y + 1
+			prefix, suffix := colorMap[c.IsWhite()], ""
+			if c.IsQueen() {
+				suffix = " queen"
 			}
+
+			fmt.Printf("%d. %s%s on %c%d\n", i+1, prefix, suffix, column, row)
 		}
 		var checkerNumber int
 		_, ok := fmt.Scanln(&checkerNumber)
-		if ok == nil && (checkerNumber-1) >= 0 && (checkerNumber-1) < len(availableCheckers) {
+		if ok == nil &&
+			checkerNumber >= 1 &&
+			checkerNumber <= len(availableCheckers) {
 			return checkerNumber - 1
-		} else {
-			if ok != nil {
-				var discard string
-				fmt.Scanln(&discard)
-			}
-			fmt.Printf("Nope, dude. This variant doesn't exist! Pick another\n")
-			continue
 		}
+
+		if ok != nil {
+			var discard string
+			fmt.Scanln(&discard)
+		}
+		fmt.Printf("This variant doesn't exist. Pick another\n")
 	}
 }
 
 func (i PlayerInput) SelectTargetPos(availableMoves []checkers.Move) int {
-	var header = "abcdefghijklmnopqrstuvwxyz"
 	for {
 		fmt.Printf("%s, where would you go?\n", i.name)
-		for i := range availableMoves {
-			var posX = availableMoves[i].Target.X
-			var posY = availableMoves[i].Target.Y
-			fmt.Printf("%d. To %c%d\n", i+1, header[posX], posY+1)
+		for i, m := range availableMoves {
+			t := m.Target
+			column := columnNames[t.X+1]
+			row := t.Y + 1
+			fmt.Printf("%d. To %c%d\n", i+1, column, row)
 		}
+
 		var targetNumber int
 		_, ok := fmt.Scanln(&targetNumber)
-		if ok == nil && (targetNumber-1) >= 0 && (targetNumber-1) < len(availableMoves) {
+		if ok == nil &&
+			targetNumber >= 1 &&
+			targetNumber <= len(availableMoves) {
 			return targetNumber - 1
-		} else {
-			if ok != nil {
-				var discard string
-				fmt.Scanln(&discard)
-			}
-			fmt.Printf("Nope, dude. This variant doesn't exist! Pick another\n")
-			continue
 		}
+
+		if ok != nil {
+			var discard string
+			fmt.Scanln(&discard)
+		}
+		fmt.Printf("No such move. Pick another one\n")
 	}
 }
 
