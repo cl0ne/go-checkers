@@ -7,21 +7,22 @@ import (
 )
 
 /*
-Checker board class
-For example:
+Checker board class.
 
-  abcdefgh
- ..........
-8| # # # #|8
-7|# # # # |7
-6| # # # #|6
-5|# # # # |5
-4| # # # #|4
-3|# # # # |3
-2| # # # #|2
-1|# # # # |1
- ''''''''''
-  abcdefgh
+Example board:
+
+   abcdefgh
+  ..........
+ 8| # # # #|8
+ 7|# # # # |7
+ 6| # # # #|6
+ 5|# # # # |5
+ 4| # # # #|4
+ 3|# # # # |3
+ 2| # # # #|2
+ 1|# # # # |1
+  ''''''''''
+   abcdefgh
 
 Here a1 has position (0,0) and h8 is on (7,7)
 */
